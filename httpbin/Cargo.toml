@@ -1,0 +1,41 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+[package]
+name = "httpbin"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+categories.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+bytes = "1"
+tokio = { version = "1.41.0", features = ["full"], optional = true }
+url = "2.5.2"
+tracing = "0.1.34"
+rustls = { version = "0.23.16", features = ["std"] } # for HTTPS connection
+tokio-rustls = "0.26.0" # for HTTPS connection
+http = "1.0.0"
+http-body = "1.0.1"
+http-body-util = "0.1.2"
+serde_json = "1.0.132"
+serde = { version = "1.0.215", features = ["derive"] }
+reqwest = { version = "0.12.9", default-features=false, features = ["json", "rustls-tls"], optional = true }
+env_logger = "0.10.2"
+thiserror = "2.0.3"
+
+[dev-dependencies]
+# Enable test-utilities in dev mode only. This is mostly for tests.
+tokio = { version = "1", features = ["test-util"] }
+anyhow = "1.0.93"
+log = "0.4.22"
+
+[[example]]
+name = "hello-world"
+path = "example/main.rs"
+
+[features]
+default = ["reqwest"]
+reqwest = ["dep:tokio", "dep:reqwest"]

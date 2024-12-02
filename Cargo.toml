@@ -1,0 +1,15 @@
+[workspace]
+members = [
+  "httpbin",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.0.1"
+edition = "2021"
+authors = []
+categories = [""]
+repository = "httpbin-rs"
+homepage = "https://github.com/pepeunlimited/httpbin-rs"
+license = "MIT"
+rust-version = "1.70"
