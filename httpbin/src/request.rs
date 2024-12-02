@@ -1,6 +1,7 @@
 use http::{header::ACCEPT, uri::PathAndQuery, HeaderMap, HeaderValue, Method};
 use reqwest::Client;
 use serde::Deserialize;
+use serde_json::Value;
 use std::marker::PhantomData;
 use url::Url;
 
@@ -16,24 +17,39 @@ pub struct Request<'a, T: for<'de> Deserialize<'de>> {
   url: Url,
   headers: HeaderMap,
   method: Method,
+  body_parameters: Option<Value>,
 }
 
 impl<'a, T: for<'de> Deserialize<'de>> Request<'a, T> {
-  pub fn new(client: &'a Client, url: Url, headers: HeaderMap, method: Method) -> Self {
+  pub fn new(
+    client: &'a Client,
+    url: Url,
+    headers: HeaderMap,
+    method: Method,
+    body_parameters: Option<Value>,
+  ) -> Self {
     Request {
       _phantom: PhantomData,
       reqwest_client: client,
       url,
       headers,
       method,
+      body_parameters,
     }
   }
 
   pub async fn send(&self) -> Result<Response<T>, Error> {
+    let mut parameters: Vec<u8> = Vec::new();
+
+    if let Some(body) = &self.body_parameters {
+      parameters = serde_json::to_vec(&body)?;
+    }
+
     let resp = self
       .reqwest_client
       .request(self.method.clone(), self.url.as_str())
       .headers(self.headers.clone())
+      .body(parameters)
       .send()
       .await?;
 

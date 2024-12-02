@@ -2,9 +2,11 @@ use crate::{
   http_methods::{Get, GetInput},
   images::Image,
   request::Request,
+  Post, PostInput,
 };
 use http::{header::ACCEPT, uri::PathAndQuery, HeaderMap, HeaderValue, Method};
 use reqwest::Client as ReqwestClient;
+use serde_json::{json, Value};
 use url::Url;
 
 pub struct Client {
@@ -51,15 +53,45 @@ impl Client {
         "X-Custom-Value",
         HeaderValue::from_str(&i.header_arg2.to_string()).unwrap(),
       );
-      // headers.insert("X-Custom-Shit", HeaderValue::from_static("ASDDSA"));
+      // headers.insert("X-Custom-Value", HeaderValue::from_static("ASDDSA"));
     }
 
-    Request::<Get>::new(&self.reqwest_client, req_url, headers, Method::GET)
+    Request::<Get>::new(&self.reqwest_client, req_url, headers, Method::GET, None)
   }
 
   /// */post* POST parameters.
-  pub fn post(&self) {
-    todo!();
+  pub fn post(&self, input: Option<&PostInput>) -> Request<Post> {
+    let mut req_url = self.base_url.clone();
+    req_url.set_path("post");
+
+    let mut headers = HeaderMap::new();
+    let mut parameters: Option<Value> = None;
+
+    // set the input values
+    if let Some(i) = input {
+      req_url.set_query(Some(
+        format!("query_arg1={}&query_arg2={}", i.query_arg1, i.query_arg2).as_str(),
+      ));
+      headers.insert(
+        ACCEPT,
+        HeaderValue::from_str(i.header_arg1.as_str()).unwrap(),
+      );
+      headers.insert(
+        "X-Custom-Value",
+        HeaderValue::from_str(&i.header_arg2.to_string()).unwrap(),
+      );
+      parameters = Some(json!({
+        "body_arg1": i.body_arg1
+      }));
+    }
+
+    Request::<Post>::new(
+      &self.reqwest_client,
+      req_url,
+      headers,
+      Method::POST,
+      parameters,
+    )
   }
 
   /// */put* PUT parameters.
@@ -92,6 +124,6 @@ impl Client {
     req_url.set_path("image/jpeg");
     let mut headers = HeaderMap::new();
     headers.insert(ACCEPT, HeaderValue::from_str("image/jpeg").unwrap());
-    Request::<Image>::new(&self.reqwest_client, req_url, headers, Method::GET)
+    Request::<Image>::new(&self.reqwest_client, req_url, headers, Method::GET, None)
   }
 }
