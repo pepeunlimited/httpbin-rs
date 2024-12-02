@@ -1,6 +1,23 @@
 # httpbin-rs 🦀
 
-Rust client implementation for the [`httpbin.org`](https://httpbin.org)
+Rust client implementation for the [`httpbin.org`](https://httpbin.org). It's currently on the **WIP**
+state and also purely for me learning rust's borrow checker, workspace / project structure and etc.
+
+[WIP] Endpoints
+---------
+
+- HTTP Methods ✅
+- Auth ⌛
+- Auth methods ⌛
+- Status codes ⌛
+- Request inspection ⌛
+- Response inspection ⌛
+- Response formats ⌛
+- Dynamic data ⌛
+- Cookies ⌛
+- Images ✅
+- Redirects ⌛
+- Anything ⌛
 
 Getting started
 ---------------
