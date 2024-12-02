@@ -6,11 +6,11 @@ use url::Url;
 
 use crate::{
   error::{Error, HttpBinError, HttpBinErrorBody},
-  Response2,
+  Response,
 };
 
 #[derive(Debug)]
-pub struct Request2<'a, T: for<'de> Deserialize<'de>> {
+pub struct Request<'a, T: for<'de> Deserialize<'de>> {
   _phantom: PhantomData<T>,
   reqwest_client: &'a Client,
   url: Url,
@@ -18,9 +18,9 @@ pub struct Request2<'a, T: for<'de> Deserialize<'de>> {
   method: Method,
 }
 
-impl<'a, T: for<'de> Deserialize<'de>> Request2<'a, T> {
+impl<'a, T: for<'de> Deserialize<'de>> Request<'a, T> {
   pub fn new(client: &'a Client, url: Url, headers: HeaderMap, method: Method) -> Self {
-    Request2 {
+    Request {
       _phantom: PhantomData,
       reqwest_client: client,
       url,
@@ -29,7 +29,7 @@ impl<'a, T: for<'de> Deserialize<'de>> Request2<'a, T> {
     }
   }
 
-  pub async fn send(&self) -> Result<Response2<T>, Error> {
+  pub async fn send(&self) -> Result<Response<T>, Error> {
     let resp = self
       .reqwest_client
       .request(self.method.clone(), self.url.as_str())
@@ -42,7 +42,7 @@ impl<'a, T: for<'de> Deserialize<'de>> Request2<'a, T> {
       let headers = resp.headers().clone();
       let bytes = resp.bytes().await?;
       // let json = resp.json::<T>().await?;
-      Ok(Response2::new(bytes, headers, content_length))
+      Ok(Response::new(bytes, headers, content_length))
     } else {
       let status_code = resp.status();
       let bytes = resp.bytes().await?;

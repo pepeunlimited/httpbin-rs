@@ -1,7 +1,7 @@
 use crate::{
   http_methods::{Get, GetInput},
   images::Image,
-  request::Request2,
+  request::Request,
 };
 use http::{header::ACCEPT, uri::PathAndQuery, HeaderMap, HeaderValue, Method};
 use reqwest::Client as ReqwestClient;
@@ -33,7 +33,7 @@ impl Client {
   // MARK: HTTP Methods -> Testing different HTTP verbs
 
   /// */get* GET parameters.
-  pub fn get(&self, input: Option<&GetInput>) -> Request2<Get> {
+  pub fn get(&self, input: Option<&GetInput>) -> Request<Get> {
     let mut req_url = self.base_url.clone();
     req_url.set_path("get");
 
@@ -54,7 +54,7 @@ impl Client {
       // headers.insert("X-Custom-Shit", HeaderValue::from_static("ASDDSA"));
     }
 
-    Request2::<Get>::new(&self.reqwest_client, req_url, headers, Method::GET)
+    Request::<Get>::new(&self.reqwest_client, req_url, headers, Method::GET)
   }
 
   /// */post* POST parameters.
@@ -87,11 +87,11 @@ impl Client {
   // MARK: Images -> Returns different image formats
 
   /// */image* returns different image formats
-  pub fn image(&self) -> Request2<Image> {
+  pub fn image(&self) -> Request<Image> {
     let mut req_url = self.base_url.clone();
     req_url.set_path("image/jpeg");
     let mut headers = HeaderMap::new();
     headers.insert(ACCEPT, HeaderValue::from_str("image/jpeg").unwrap());
-    Request2::<Image>::new(&self.reqwest_client, req_url, headers, Method::GET)
+    Request::<Image>::new(&self.reqwest_client, req_url, headers, Method::GET)
   }
 }

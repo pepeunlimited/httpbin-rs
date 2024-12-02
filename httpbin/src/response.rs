@@ -5,16 +5,16 @@ use serde::Deserialize;
 use std::marker::PhantomData;
 
 #[derive(Debug)]
-pub struct Response2<T: for<'de> Deserialize<'de>> {
+pub struct Response<T: for<'de> Deserialize<'de>> {
   _phantom: PhantomData<T>,
   pub bytes: Bytes,
   pub headers: HeaderMap,
   pub content_length: Option<u64>,
 }
 
-impl<T: for<'de> Deserialize<'de>> Response2<T> {
+impl<T: for<'de> Deserialize<'de>> Response<T> {
   pub fn new(bytes: Bytes, headers: HeaderMap, content_length: Option<u64>) -> Self {
-    Response2 {
+    Response {
       _phantom: PhantomData,
       bytes,
       headers,

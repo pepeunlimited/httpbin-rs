@@ -8,7 +8,9 @@ pub mod serde_utils;
 
 pub use client::Client;
 pub use error::{Error, HttpBinError, HttpBinErrorBody};
-pub use http_methods::{Get, GetArgs, GetHeaders, GetInput};
-pub use request::Request2;
-pub use response::Response2;
+pub use http_methods::{
+  Get, GetArgs, GetHeaders, GetInput, Post, PostArgs, PostHeaders, PostInput,
+};
+pub use request::Request;
+pub use response::Response;
 pub use serde_utils::as_i64;

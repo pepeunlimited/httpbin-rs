@@ -43,14 +43,39 @@ pub struct GetInput {
 #[derive(Deserialize, Debug)]
 pub struct Post {
   pub origin: String,
-  #[serde(flatten)]
-  pub other: std::collections::HashMap<String, serde_json::Value>,
+}
+
+#[derive(Clone)]
+pub struct PostInput {
+  pub query_arg1: String,
+  pub query_arg2: i64,
+  pub header_arg1: String,
+  pub header_arg2: i64,
+  pub body_arg1: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct PostArgs {
+  #[serde(default)]
+  pub query_arg1: String,
+  #[serde(default, deserialize_with = "as_i64")]
+  pub query_arg2: i64,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct PostHeaders {
+  #[serde(rename = "Accept")]
+  pub header_arg1: String,
+  // #[serde(rename = "X-Custom-Value", default, deserialize_with = "as_i64")]
+  // pub header_arg2: Option<i32>,
+  #[serde(rename = "X-Custom-Value", default, deserialize_with = "as_i64")]
+  pub header_arg2: i64,
 }
 
 #[cfg(test)]
 mod tests {
 
-  use crate::{http_methods::GetInput, Client2};
+  use crate::{http_methods::GetInput, Client};
   use std::option::Option::Some;
 
   const ENDPOINT: &str = "https://httpbin.org";
@@ -58,7 +83,7 @@ mod tests {
   #[tokio::test]
   async fn http_methods_get_with_inputs() {
     env_logger::init();
-    let client = Client2::new(ENDPOINT);
+    let client = Client::new(ENDPOINT);
     let input = GetInput {
       query_arg1: String::from("variable1"),
       query_arg2: 2,
@@ -81,7 +106,7 @@ mod tests {
 
   #[tokio::test]
   async fn http_methods_get_without_inputs() {
-    let client = Client2::new(ENDPOINT);
+    let client = Client::new(ENDPOINT);
     let r = client.get(None).send().await.unwrap();
     match r.json() {
       Ok(get) => {
