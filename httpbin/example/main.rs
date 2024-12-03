@@ -1,8 +1,10 @@
+use std::{fs::File, io::Write};
+
 use anyhow::Result;
 use httpbin::Error;
 
 #[tokio::main]
-async fn main() -> Result<(), Error> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
   env_logger::init();
   let client = httpbin::Client::new("https://httpbin.org");
 
@@ -10,7 +12,12 @@ async fn main() -> Result<(), Error> {
   let _ = client.get(None).send().await?;
 
   // MARK: /image
-  let _ = client.image().send().await?;
+  let input = httpbin::ImageInput {
+    arg: httpbin::ImageArg::Path(String::from("png")),
+  };
+  let png_resp = client.image(&input).send().await?;
+  let mut png_img = File::create("output.png")?;
+  png_img.write_all(&png_resp.bytes.to_vec())?;
 
   // MARK: /post
   let input = httpbin::PostInput {
@@ -21,6 +28,5 @@ async fn main() -> Result<(), Error> {
     body_arg1: String::from("Uno"),
   };
   let _ = client.post(Some(&input)).send().await?;
-
   Ok(())
 }

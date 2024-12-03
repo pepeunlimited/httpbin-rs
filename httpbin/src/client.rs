@@ -1,8 +1,10 @@
+use std::borrow::Borrow;
+
 use crate::{
   http_methods::{Get, GetInput},
-  images::Image,
+  images::{Image, ImageInput},
   request::Request,
-  Post, PostInput,
+  Error, Post, PostInput,
 };
 use http::{header::ACCEPT, uri::PathAndQuery, HeaderMap, HeaderValue, Method};
 use reqwest::Client as ReqwestClient;
@@ -119,11 +121,21 @@ impl Client {
   // MARK: Images -> Returns different image formats
 
   /// */image* returns different image formats
-  pub fn image(&self) -> Request<Image> {
+  pub fn image(&self, input: &ImageInput) -> Request<Image> {
     let mut req_url = self.base_url.clone();
-    req_url.set_path("image/jpeg");
     let mut headers = HeaderMap::new();
-    headers.insert(ACCEPT, HeaderValue::from_str("image/jpeg").unwrap());
+
+    // set the input values
+    match &input.arg {
+      crate::images::ImageArg::Accept(v) => {
+        req_url.set_path("image");
+        headers.insert(ACCEPT, HeaderValue::from_str(v.as_str()).unwrap());
+      }
+      crate::images::ImageArg::Path(v) => {
+        req_url.set_path(&format!("image/{}", v.as_str()));
+      }
+    }
+
     Request::<Image>::new(&self.reqwest_client, req_url, headers, Method::GET, None)
   }
 }
