@@ -1,7 +1,8 @@
 # httpbin-rs 🦀
 
-Rust client implementation for the [`httpbin.org`](https://httpbin.org). It's currently on the **WIP**
-state and also purely for me learning rust's borrow checker, workspace / project structure and etc.
+Rust http-client implementation for the [`httpbin.org`](https://httpbin.org). It's currently on the **WIP**
+state and also purely for learning Rust's borrow checker, workspace / project structure, feature flags
+and so on.
 
 [WIP] Endpoints
 ---------
@@ -59,7 +60,7 @@ $ cargo test test_library_len
 Run test with println
 
 ```
-$ cargo test test_point_magnitude -- --nocapture
+$ cargo test http_methods_post_with_inputs 
 ```
 
 Run tests only in a specific package `httpbin`
@@ -78,7 +79,18 @@ Run example `hello-world` with the logging
 
 ```
 $ RUST_LOG=reqwest=trace cargo run --example hello-world
+```
 
+Run example `hello-world` with the println
+
+```
+$ cargo run --example hello-world -- --nocapture 
+```
+
+Build release binary of the example
+
+```
+$ cargo build --release --example hello-world
 ```
 
 rust-lsp
