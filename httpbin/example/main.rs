@@ -1,7 +1,6 @@
 use std::{fs::File, io::Write};
 
 use anyhow::Result;
-use httpbin::Error;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

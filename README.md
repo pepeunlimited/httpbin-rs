@@ -35,7 +35,6 @@ $ cargo --version
 ```
 
 Update `rustc` and `cargo`  
-
 ```
 $ rustup update stable
 ```
@@ -46,49 +45,41 @@ httpbin
 Some of the useful commands running the workspace.
 
 Run unit tests 
-
 ```
 $ cargo test
 ```
 
 Run specific unit test 
-
 ```
 $ cargo test test_library_len
 ```
 
 Run test with println
-
 ```
 $ cargo test http_methods_post_with_inputs 
 ```
 
 Run tests only in a specific package `httpbin`
-
 ```
 $ cargo test --package httpbin
 ```
 
 Run tests with the clean result list
-
 ```
 $ cargo test --package httpbin -- --show-output
 ```
 
 Run example `hello-world` with the logging
-
 ```
 $ RUST_LOG=reqwest=trace cargo run --example hello-world
 ```
 
 Run example `hello-world` with the println
-
 ```
 $ cargo run --example hello-world -- --nocapture 
 ```
 
 Build release binary of the example
-
 ```
 $ cargo build --release --example hello-world
 ```
